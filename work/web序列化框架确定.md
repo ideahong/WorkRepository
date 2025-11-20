@@ -58,7 +58,52 @@ Dubbo + Hessian、Spring Cloud Feign + Jackson、gRPC + Protobuf
 
 # 序列化相关注解、关键字
 @Transient 、@JsonIgnore 、transient
+1. transient 关键字
+   作用范围：Java原生序列化
+   功能：标记字段不参与序列化过程
+   使用方式：
+```java
+  public class Example implements Serializable {
+      private String serializedField;
+      private transient String nonSerializedField; // 不会被序列化
+  }
+  
+```
+2.@Transient 注解
+作用范围：JPA/Hibernate 持久化操作
+功能：标记字段不持久化到数据库
+注意：不影响序列化操作，只是告诉ORM框架不要将该字段映射到数据库
+使用方式：
+```java
+  public class User {
+      private String name;
+      
+      @Transient
+      private String temporaryData; // 不存储到数据库，但仍可能被序列化
+  }
+  
+```
+3. @JsonIgnore 注解
+   作用范围：Jackson序列化框架
+   功能：标记字段在JSON序列化/反序列化过程中被忽略
+   使用方式：
+```java
+  public class User {
+    private String name;
 
+    @JsonIgnore
+    private String password; // 在JSON序列化时不包含此字段
+}
+
+```
+主要区别总结
+
+| 特性 | transient | @Transient | JsonIgnore |
+|----|-----------| -------- |------------|
+| 影响Java原生序列化 | ✅ 是       | ❌ 否 | ❌ 否        |
+| 影响JPA/Hibernate 持久化操作 | ❌ 否       | ✅ 是 | ❌ 否        |
+| 影响Jackson序列化框架 | ❌ 否(除非配置) | ❌ 否 | ✅ 是        |
+| 作用域 | 字段级别 | 字段/方法级 | 字段/方法级     |
 
 # 获取web支持的序列化框架版本
 ```java
