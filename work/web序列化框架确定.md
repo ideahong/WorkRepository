@@ -123,7 +123,7 @@ public class UserController {
         List<HttpMessageConverter<?>> converters = handlerAdapter.getMessageConverters();
         
         for (HttpMessageConverter<?> converter : converters) {
-            if (converter.canRead(Page.class, request.getContentType())) {
+            if (converter.canRead(Page.class, MediaType.valueOf(request.getContentType()))) {
                 System.out.println("使用的序列化器: " + converter.getClass().getSimpleName());
                 
                 if (converter instanceof MappingJackson2HttpMessageConverter) {
